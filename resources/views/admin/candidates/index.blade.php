@@ -1,0 +1,56 @@
+@extends('layouts.admin')
+@section('page_heading')
+    {{ $roleName ?? "Users" }}
+@endsection
+
+@can('candidates.create')
+@section('top_buttion')
+      <button type="button" class="btn addButton" data-bs-toggle="modal" data-bs-target="#createModal">
+        Add {{$roleName}}
+    </button>
+@endsection
+@endcan
+@section('content')
+
+    <div class="col-12">
+        <div class="card borderRadius">
+            <div class="card-body p-0 px-3">
+                <table class="table table-lg tableStyle mb-0 dataTable align-middle" id="dataTable" width="100%">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 50px;">S.N</th>
+                            <th scope="col">Name</th>
+                            <th scope="col" >Phone</th>
+                            <th>Status</th>
+                            <th scope="col" style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<x-livewire-modal id="createModal" title="Create Candidate" modal_size="xxl">
+    <livewire:user.create usertype="Candidates" />
+</x-livewire-modal>
+
+<x-livewire-modal id="editModal" title="Edit Candidate" modal_size="xxl">
+    <livewire:user.edit  usertype="Candidates" />
+</x-livewire-modal>
+@endsection
+
+@push('js')
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+ <!-- DataTables CSS -->
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        let url = "/admin/candidates";
+        initializeDataTable('#dataTable', url, ['id','name','mobile_number','status','action'], [[1, 'desc']], true);
+    });
+</script>
+@endpush

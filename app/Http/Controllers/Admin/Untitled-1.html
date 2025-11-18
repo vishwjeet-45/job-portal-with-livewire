@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hindi Typing With Matras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h2 {
+            color: #333;
+        }
+        .control-group {
+            margin: 20px 0;
+        }
+        select {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 2px solid #4285f4;
+            border-radius: 4px;
+            cursor: pointer;
+            background: white;
+        }
+        input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px;
+            font-size: 20px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+        .status {
+            display: inline-block;
+            margin-left: 15px;
+            padding: 8px 15px;
+            background: #e8f0fe;
+            color: #1967d2;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .instructions {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #4285f4;
+            border-radius: 4px;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #1967d2;
+        }
+        .instructions ul {
+            line-height: 1.8;
+        }
+        .instructions code {
+            background: #e8f0fe;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #d93025;
+        }
+        .examples {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 4px;
+        }
+        .examples h4 {
+            margin-top: 0;
+            color: #0f9d58;
+        }
+        .example-item {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>✍️ Hindi Typing with Matras</h2>
+
+<div class="instructions">
+    <h3>📝 How to use:</h3>
+    <ul>
+        <li>Select <strong>Hindi</strong> from dropdown to enable transliteration</li>
+        <li>Type in English and press <strong>Space</strong> to convert to Hindi</li>
+        <li>Each word converts when you press space</li>
+    </ul>
+</div>
+
+<div class="control-group">
+    <select id="languageSelect">
+        <option value="en">English</option>
+        <option value="hi">Hindi (हिंदी)</option>
+    </select>
+    <span class="status" id="status">Mode: English</span>
+</div>
+
+<input type="text" id="searchBox" placeholder="Select Hindi mode and type here...">
+
+<div class="examples">
+    <h4>💡 Try these examples:</h4>
+    <div class="example-item"><code>namaste</code> → नमस्ते</div>
+    <div class="example-item"><code>bharat</code> → भारत</div>
+    <div class="example-item"><code>hindi</code> → हिंदी</div>
+    <div class="example-item"><code>dhanyavaad</code> → धन्यवाद</div>
+    <div class="example-item"><code>desh</code> → देश</div>
+    <div class="example-item"><code>kitaab</code> → किताब</div>
+    <div class="example-item"><code>paani</code> → पानी</div>
+</div>
+
+<script>
+
+// Consonants mapping
+const consonants = {
+    "kh": "ख", "k": "क",
+    "gh": "घ", "g": "ग",
+    "ch": "छ", "c": "च",
+    "jh": "झ", "j": "ज",
+    "th": "थ", "t": "त",
+    "dh": "ध", "d": "द",
+    "ph": "फ", "p": "प",
+    "bh": "भ", "b": "ब",
+    "m": "म", "n": "न",
+    "y": "य", "r": "र",
+    "l": "ल", "v": "व", "w": "व",
+    "sh": "श", "s": "स", "h": "ह",
+    "ng": "ङ", "ny": "ञ",
+    "nh": "ण", "N": "ण"
+};
+
+// Vowel matras (used after consonants)
+const matras = {
+    "aa": "ा", "a": "ा",
+    "i": "ि",
+    "ee": "ी", "I": "ी",
+    "u": "ु",
+    "oo": "ू", "U": "ू",
+    "e": "े",
+    "ai": "ै",
+    "o": "ो",
+    "au": "ौ",
+    "R": "ृ"
+};
+
+// Independent vowels (word start)
+const vowels = {
+    "a": "अ", "aa": "आ", "A": "आ",
+    "i": "इ", "ee": "ई", "I": "ई",
+    "u": "उ", "oo": "ऊ", "U": "ऊ",
+    "e": "ए", "ai": "ऐ",
+    "o": "ओ", "au": "औ"
+};
+
+// Special characters
+const special = {
+    "0": "०", "1": "१", "2": "२", "3": "३", "4": "४",
+    "5": "५", "6": "६", "7": "७", "8": "८", "9": "९"
+};
+
+function transliterate(text) {
+    if (!text || text.trim() === '') return text;
+
+    let result = '';
+    let i = 0;
+
+    while (i < text.length) {
+        let matched = false;
+
+        // Try 2-char consonants first (kh, gh, etc)
+        if (i < text.length - 1) {
+            let twoChar = text.substr(i, 2).toLowerCase();
+            if (consonants[twoChar]) {
+                result += consonants[twoChar];
+                i += 2;
+
+                // Check for matra after consonant
+                let remainingText = text.substr(i).toLowerCase();
+                for (let [key, value] of Object.entries(matras).sort((a, b) => b[0].length - a[0].length)) {
+                    if (remainingText.startsWith(key)) {
+                        result += value;
+                        i += key.length;
+                        break;
+                    }
+                }
+                matched = true;
+                continue;
+            }
+        }
+
+        // Try 2-char vowels at word start
+        if (i === 0 || result.endsWith(' ')) {
+            if (i < text.length - 1) {
+                let twoChar = text.substr(i, 2).toLowerCase();
+                if (vowels[twoChar]) {
+                    result += vowels[twoChar];
+                    i += 2;
+                    matched = true;
+                    continue;
+                }
+            }
+        }
+
+        // Try single consonant
+        let oneChar = text[i].toLowerCase();
+        if (consonants[oneChar]) {
+            result += consonants[oneChar];
+            i++;
+
+            // Check for matra
+            let remainingText = text.substr(i).toLowerCase();
+            for (let [key, value] of Object.entries(matras).sort((a, b) => b[0].length - a[0].length)) {
+                if (remainingText.startsWith(key)) {
+                    result += value;
+                    i += key.length;
+                    break;
+                }
+            }
+            matched = true;
+            continue;
+        }
+
+        // Try single vowel at word start
+        if (i === 0 || result.endsWith(' ')) {
+            if (vowels[oneChar]) {
+                result += vowels[oneChar];
+                i++;
+                matched = true;
+                continue;
+            }
+        }
+
+        // Numbers
+        if (special[text[i]]) {
+            result += special[text[i]];
+            i++;
+            matched = true;
+            continue;
+        }
+
+        // Space or punctuation - keep as is
+        if (!matched) {
+            result += text[i];
+            i++;
+        }
+    }
+
+    return result;
+}
+
+// Input handling
+let hindiEnabled = false;
+let currentInput = '';
+
+const searchBox = document.getElementById("searchBox");
+const languageSelect = document.getElementById("languageSelect");
+const statusSpan = document.getElementById("status");
+
+searchBox.addEventListener('input', function(e) {
+    if (!hindiEnabled) return;
+
+    const value = e.target.value;
+    const lastChar = value[value.length - 1];
+
+    // Store the input for processing
+    currentInput = value;
+});
+
+searchBox.addEventListener('keydown', function(e) {
+    if (!hindiEnabled) return;
+
+    // Convert on space
+    if (e.key === ' ') {
+        e.preventDefault();
+
+        const value = searchBox.value;
+        const words = value.split(' ');
+        const lastWord = words[words.length - 1];
+
+        if (lastWord) {
+            const converted = transliterate(lastWord);
+            words[words.length - 1] = converted;
+            searchBox.value = words.join(' ') + ' ';
+        } else {
+            searchBox.value = value + ' ';
+        }
+    }
+});
+
+languageSelect.addEventListener("change", () => {
+    if (languageSelect.value === "hi") {
+        hindiEnabled = true;
+        statusSpan.textContent = "Mode: Hindi ✓";
+        statusSpan.style.background = "#e8f5e9";
+        statusSpan.style.color = "#0f9d58";
+        searchBox.placeholder = "Type in English, press Space to convert...";
+    } else {
+        hindiEnabled = false;
+        statusSpan.textContent = "Mode: English";
+        statusSpan.style.background = "#e8f0fe";
+        statusSpan.style.color = "#1967d2";
+        searchBox.placeholder = "Select Hindi mode and type here...";
+    }
+});
+
+</script>
+
+</body>
+</html>
