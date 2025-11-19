@@ -12,23 +12,36 @@ class Job extends Model
 
     const WORK_MODE = ['onsite' => 'Onsite', 'hybrid' => 'Hybrid','remote' => 'Remote'];
 
+    const SHIFT_TYPES = [
+                            'morning_shift'      => 'Morning Shift',
+                            'evening_shift'      => 'Evening Shift',
+                            'night_shift'        => 'Night Shift',
+                            'full_time'          => 'Full-Time',
+                            'part_time'          => 'Part-Time',
+                            'rotational_shifts'  => 'Rotational Shifts',
+                            'standby_on_call'    => 'Standby / On-Call',
+                        ];
+
+
     protected $fillable =
     [
         'employer_id',
         'title',
+        'slug',
         'employment_type',
         'work_mode',
         'gender',
+        'languages',
         'industry_type_id',
         'industry_id',
         'funcational_area_id',
         'country_id',
         'state_id',
         'city_id',
+        'shift',
         'min_salary',
         'max_salary',
         'currency',
-        'shift',
         'description',
         'experience_level',
         'qualification',

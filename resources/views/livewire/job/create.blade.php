@@ -1,10 +1,35 @@
-<x-form-layout title="Create Role">
-    <x-dynamic-form :fields="$formFields" form-data="formData" col="3" />
+
+
+
+<x-form-layout title="Create Role" padding="3">
+    <x-dynamic-form :fields="$formFields" form-data="formData" col="3" multiSelect=1 />
 </x-form-layout>
 
+
+@push('css')
+<style>
+
+.select2-container--default .select2-selection--single {
+    height: 38px !important;
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 24px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+    right: 10px;
+}
+</style>
+@endpush
 @push('js')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js">
+
 </script>
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 <script>
 let editorInstance;
 
@@ -23,10 +48,7 @@ ClassicEditor
             clearTimeout(typingTimer);
             @this.set('description', editor.getData());
             typingTimer = setTimeout(() => {
-                $('#createModal .select2').select2({
-                    dropdownParent: $('#createModal'),
-                    width: '100%'
-                });
+                $('.select2').select2();
             }, doneTypingDelay);
         });
     })
@@ -34,20 +56,19 @@ ClassicEditor
         console.error(error);
     });
 
-   $('#createModal .select2').on('change', function (e) {
+   $('.select2').on('change', function (e) {
         const model = $(this).data('model');
         const value = $(this).val();
+        console.log(model);
         if (model) {
             @this.set(model, value);
             setTimeout(() => {
                 console.log('test2');
-                $('#createModal .select2').select2({
-                    dropdownParent: $('#createModal'),
-                    width: '100%'
-                });
-            }, 500);
+                $('.select2').select2();
+            }, 400);
         }
     });
 });
+
 </script>
 @endpush

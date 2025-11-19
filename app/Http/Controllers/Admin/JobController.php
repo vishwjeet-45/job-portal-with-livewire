@@ -24,6 +24,9 @@ class JobController extends Controller
                 ->filter(function ($q) use ($request) {
                     $this->filterService->handle($request, $q);
                 })
+                ->addColumn('cities.name',function ($row){
+                     return $row->cities->pluck('name')->implode(', ') ?: '-';
+                })
                 ->addColumn('action', function ($row) {
 
                     return '<button class="btn btn-outline-warning btn-sm mr-2" onclick="openEditModal(' . $row->id . ')">
@@ -31,10 +34,10 @@ class JobController extends Controller
                             </button>' .
                         '
                             <button type="button"
-                                    class="btn btn-outline-danger btn-sm delete-button"
-                                    data-url="' . route('admin.jobs.destroy', $row->id) . '"
+                                    class="btn btn-outline-primary btn-sm delete-button"
+                                    data-url="' . route('admin.jobs.show', $row->id) . '"
                                     data-table="dataTable">
-                                <i class="ri-delete-bin-line"></i>
+                                <i class="ri-eye-line"></i>
                             </button>
                         ';
                 })
@@ -44,6 +47,12 @@ class JobController extends Controller
         }
 
          return view('admin.jobs.index');
+    }
+
+
+    public function create()
+    {
+        return view('admin.jobs.create');
     }
 
     public function destroy($id)

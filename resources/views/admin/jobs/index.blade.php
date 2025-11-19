@@ -3,9 +3,13 @@
 @section('page_heading', 'Job List')
 @can('jobs.create')
 @section('top_buttion')
-    <button type="button" class="btn addButton" data-bs-toggle="modal" data-bs-target="#createModal">
+    <!-- <button type="button" class="btn addButton" data-bs-toggle="modal" data-bs-target="#createModal">
         Add Job
-    </button>
+    </button> -->
+
+    <a href="{{ route('admin.jobs.create') }}" class="btn addButton" >
+        Add Job
+    </a>
 @endsection
 @endcan
 @section('content')
@@ -15,7 +19,13 @@
             <thead>
                 <tr>
                     <th scope="col" style="width: 50px;">S.N</th>
-                    <th scope="col">Name</th>
+                    <th scope="col">Job Title </th>
+                    <th scope="col">Location </th>
+                    <th scope="col">Applied Count</th>
+                    <th scope="col">Is Suspended  </th>
+                    <th scope="col">Created On </th>
+                    <th scope="col">Job Expiry Date </th>
+                    <th scope="col">Last Changes By </th>
                     <th scope="col" style="text-align: right;">Actions</th>
                 </tr>
             </thead>
@@ -38,7 +48,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         let url = "/admin/jobs";
-        initializeDataTable('#dataTable', url, ['id','title','action'], [[1, 'desc']], true);
+        initializeDataTable('#dataTable', url, ['id','title','cities.name','views','is_featured','created_at','deadline','created_by','action'], [[1, 'desc']], true);
     });
 </script>
 @endpush

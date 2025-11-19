@@ -4,12 +4,13 @@
     'isEdit' => false,
     'submitLabel' => null,
     'backRoute' => null,
+    'padding' =>2
 ])
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card m-0 my-2">
-                <div class="card-body p-2">
+                <div class="card-body p-{{ $padding }}">
                     <form wire:submit.prevent="save" enctype="multipart/form-data">
                         {{ $slot }}
                     @if (session()->has('message'))

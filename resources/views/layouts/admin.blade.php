@@ -347,6 +347,13 @@ window.addEventListener('refresh-select2', (event) => {
         });
     }, 500);
 });
+window.addEventListener('refresh-select3', (event) => {
+    console.log('refresh-select3');
+    setTimeout(() => {
+        $(`.select2`).select2();
+    }, 300);
+});
+
 
 </script>
 </html>

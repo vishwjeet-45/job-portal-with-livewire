@@ -1,11 +1,12 @@
 {{-- resources/views/components/dynamic-form.blade.php --}}
-@props(['fields' => [], 'formData' => 'formData', 'col' => 2])
+@props(['fields' => [], 'formData' => 'formData', 'col' => 2,'multiSelect'=>0,'ignore'=>['languages','description','country_id','gender','employer_id','employment_type','work_mode','industry_type_id','shift','status']])
 
 <div class="dynamic-form row row-cols-1 row-cols-md-{{ $col }}">
     @foreach ($fields as $name => $field)
+    @php $is_ignore = (in_array($name, $ignore)); @endphp
     <div class="col mb-3 field-{{ $name }} @if ($name =='description' )
         col-md-12
-    @endif" @if($name == 'description') wire:ignore @endif>
+    @endif" @if($is_ignore) wire:ignore @endif>
         {{-- Label (skip for checkbox to keep inline label) --}}
         @if($field['type'] !== 'checkbox')
         <label for="{{ $name }}" class="form-label text-dark">
@@ -26,10 +27,11 @@
         @break
 
         @case('select')
+        @php $isMulti = ($multiSelect && in_array($name, ['city_id', 'languages'])); @endphp
         <select id="{{ $name }}"
             data-model="{{ $formData }}.{{ $name }}"
             class="form-control select2 @error(" {$formData}.{$name}") is-invalid @enderror"
-            @if($field['required'] ?? false) @endif>
+            @if($field['required'] ?? false) @endif @if($multiSelect && $isMulti) multiple  @endif>
             <option value="">-- Select {{ $field['label'] }} --</option>
             @foreach ($field['options'] ?? [] as $val => $label)
              <option value="{{ $val }}" {{ old($formData.'.'.$name, data_get($this, $formData.'.'.$name)) == $val ? 'selected' : '' }}>
