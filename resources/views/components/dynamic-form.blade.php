@@ -26,20 +26,37 @@
             @if($field['required'] ?? false) @endif></textarea>
         @break
 
-        @case('select')
-        @php $isMulti = ($multiSelect && in_array($name, ['city_id', 'languages'])); @endphp
-        <select id="{{ $name }}"
-            data-model="{{ $formData }}.{{ $name }}"
-            class="form-control select2 @error(" {$formData}.{$name}") is-invalid @enderror"
-            @if($field['required'] ?? false) @endif @if($multiSelect && $isMulti) multiple  @endif>
-            <option value="">-- Select {{ $field['label'] }} --</option>
-            @foreach ($field['options'] ?? [] as $val => $label)
-             <option value="{{ $val }}" {{ old($formData.'.'.$name, data_get($this, $formData.'.'.$name)) == $val ? 'selected' : '' }}>
-                    {{ $label }}
-                </option>
-            @endforeach
-        </select>
-        @break
+     @case('select')
+    @php
+        $isMulti = ($multiSelect && in_array($name, ['city_id', 'languages']));
+
+        $selectedValues = old($formData.'.'.$name, data_get($this, $formData.'.'.$name));
+        if ($selectedValues instanceof Illuminate\Support\Collection) {
+            $selectedValues = $selectedValues->toArray();
+        }
+    @endphp
+
+    <select id="{{ $name }}"
+        data-model="{{ $formData }}.{{ $name }}"
+        class="form-control select2 @error("{$formData}.{$name}") is-invalid @enderror"
+        @if($isMulti) multiple @endif >
+
+        <option value="">-- Select {{ $field['label'] }} --</option>
+
+        @foreach ($field['options'] ?? [] as $val => $label)
+            <option value="{{ $val }}"
+                @if(is_array($selectedValues) && in_array($val, $selectedValues))
+                    selected
+                @elseif($selectedValues == $val)
+                    selected
+                @endif
+            >
+                {{ $label }}
+            </option>
+        @endforeach
+    </select>
+    @break
+
 
         @case('radio')
         <div class="radio-group">

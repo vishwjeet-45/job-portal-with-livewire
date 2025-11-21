@@ -86,7 +86,8 @@ class Create extends Component
 
     }
 
-    public function updatedFormDataIndustryId($value){
+    public function updatedFormDataIndustryId($value)
+    {
 
         $this->functional_areas = FuncationalArea::where('industry_id', $value)
             ->pluck('name', 'id')
@@ -138,18 +139,22 @@ class Create extends Component
         $data['slug'] = Str::slug($data['title']);
         $job = Job::create($data);
 
+
         $cityIds = (array) $this->formData['city_id'];
         $languages = (array) $this->formData['languages'];
         $job->cities()->sync($cityIds);
-        $job->languages()->sync($languages);
+        $job->getLanguages()->sync($languages);
+
+        $job->created_by = auth()->user()->id;
+        $job->save();
+
 
         $this->reset();
 
         $this->dispatch('reset-js-fields');
 
         $this->mount();
-
-        $this->dispatch('success', message: 'Employer created successfully!');
+        $this->dispatch('success', message: 'Job created successfully!');
     }
     public function render()
     {

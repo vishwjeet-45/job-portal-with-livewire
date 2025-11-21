@@ -214,6 +214,12 @@
         }]);
     }
 
+    function openViewModal(id) {
+        Livewire.dispatch('viewJob', [{
+            id: id
+        }]);
+    }
+
     document.addEventListener('modal-hide', function(event) {
         let modalId = event.detail.id;
         $('#' + modalId).modal('hide');
@@ -284,6 +290,61 @@
         });
     });
 
+
+$(document).on('change', '.toggle-data', function() {
+    let checkbox = $(this);
+    let id = checkbox.data('id');
+    let field = checkbox.data('field');
+    let route = checkbox.data('route');
+    let newStatus = checkbox.is(':checked') ? 1 : 0;
+    let oldStatus = newStatus === 1 ? 0 : 1;
+    let showTitle = newStatus === 1 ? 'Activate' : 'Deactivate';
+    console.log(route);
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want ${showTitle} this job?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, update it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: route,
+                type: "POST",
+                data: {
+                    id: id,
+                    field: field,
+                    value: newStatus,
+                    _token: $('meta[name="csrf-token"]').attr("content")
+                },
+                success: function(res) {
+                    if (res.status) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Updated!',
+                            text: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire('Error', res.message, 'error');
+                        checkbox.prop('checked', oldStatus === 1);
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Something went wrong.', 'error');
+                    checkbox.prop('checked', oldStatus === 1);
+                }
+            });
+        } else {
+            checkbox.prop('checked', oldStatus === 1);
+        }
+    });
+});
 
 
 $(document).on('change', '.toggle-status', function() {

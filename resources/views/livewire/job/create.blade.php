@@ -46,7 +46,7 @@ ClassicEditor
         editorInstance = editor;
         editor.model.document.on('change:data', () => {
             clearTimeout(typingTimer);
-            @this.set('description', editor.getData());
+            @this.set('formData.description', editor.getData());
             typingTimer = setTimeout(() => {
                 $('.select2').select2();
             }, doneTypingDelay);

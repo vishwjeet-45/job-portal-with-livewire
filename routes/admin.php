@@ -34,3 +34,10 @@ Route::name('roles.')->prefix('role')->group(function ($router) {
     Route::get('/assing-permission', [PermissionController::class, 'assing_permission'])->name('assing_permission');
     Route::get('/role-permission', [PermissionController::class,'role_permission'])->name('role_permission');
 });
+
+Route::get('job/apply-list/{id}',[JobController::class,'apply_list'])->name('job.apply-list');
+Route::get('job/approved-list',[JobController::class,'approved_list'])->name('job.approved-list');
+Route::post('job/updateStatus',[JobController::class,'updateStatus'])->name('jobs.updateStatus');
+
+Route::post('job/{id}/apply', [JobController::class, 'apply'])->name('jobs.apply');
+

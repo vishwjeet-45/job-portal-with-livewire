@@ -38,8 +38,9 @@
 <x-livewire-modal id="createModal" title="Create Job" modal_size="xxl">
     <livewire:job.create />
 </x-livewire-modal>
-<x-livewire-modal id="editModal" title="Edit Job" modal_size="xxl">
-    <livewire:job.edit />
+
+<x-livewire-modal id="viewModal" title="Job Details" modal_size="xxl">
+    <livewire:job.view />
 </x-livewire-modal>
 @endsection
 
@@ -48,7 +49,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         let url = "/admin/jobs";
-        initializeDataTable('#dataTable', url, ['id','title','cities.name','views','is_featured','created_at','deadline','created_by','action'], [[1, 'desc']], true);
+        initializeDataTable('#dataTable', url, ['id','title','cities.name','views','is_featured','created_at','deadline','createdBy.name','action'], [[1, 'desc']], true);
     });
 </script>
 @endpush

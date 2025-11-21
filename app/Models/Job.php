@@ -50,7 +50,7 @@ class Job extends Model
         'status'
     ];
 
-    public function languages()
+    public function getLanguages()
     {
         return $this->morphToMany(Language::class, 'languageable');
     }
@@ -59,5 +59,26 @@ class Job extends Model
     {
         return $this->morphToMany(City::class, 'cityable');
     }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
 
 }
