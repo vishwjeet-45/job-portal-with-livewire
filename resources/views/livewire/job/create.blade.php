@@ -1,6 +1,3 @@
-
-
-
 <x-form-layout title="Create Role" padding="3">
     <x-dynamic-form :fields="$formFields" form-data="formData" col="3" multiSelect=1 />
 </x-form-layout>
@@ -26,10 +23,8 @@
 @endpush
 @push('js')
 <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js">
-
 </script>
-<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
 <script>
 let editorInstance;
 

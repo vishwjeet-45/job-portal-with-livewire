@@ -21,8 +21,8 @@ Route::get('/get-cities/{state}', function($stateId) {
 });
 
 Route::get('/', function () {
-    return view('welcome');
-})->name('index');
+    return view('frontend.index');
+})->name('index')->middleware('auth');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

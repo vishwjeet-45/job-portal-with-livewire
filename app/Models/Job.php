@@ -80,5 +80,9 @@ class Job extends Model
         return $this->hasMany(JobApplication::class);
     }
 
+    public function company(){
+        return $this->belongsTo(Employer::class,'employer_id');
+    }
+
 
 }
