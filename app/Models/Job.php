@@ -55,6 +55,11 @@ class Job extends Model
         return $this->morphToMany(Language::class, 'languageable');
     }
 
+    public function skills()
+    {
+        return $this->morphToMany(Skill::class, 'skillable');
+    }
+
     public function cities()
     {
         return $this->morphToMany(City::class, 'cityable');

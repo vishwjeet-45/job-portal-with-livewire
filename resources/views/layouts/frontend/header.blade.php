@@ -9,7 +9,7 @@
                 <div class="navmenu d-flex gap-5 align-items-center">
                     <ul class="job_list">
                         <li>
-                            <a href="{{ route('admin.jobs.index') }}">Jobs</a>
+                            <a href="{{ route('jobs.index') }}">Jobs</a>
                             <span class="nottifications bg-danger"><span
                                     class="d-flex justify-content-center align-items-center">{{ \App\Models\Job::count() ?? '0' }}</span>
                         </li>

@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Livewire\User;
+
+use Livewire\Component;
+use App\Models\Employment As Emp;
+use Illuminate\Support\Facades\Auth;
+
+class Employment extends Component
+{
+
+    public $employments = [];
+
+    public $employment_id;
+    public $company_name;
+    public $job_title;
+    public $joining_date;
+    public $is_current = "yes";
+    public $expected_notice = "15 Days or Less";
+
+    public $mode = "create"; // create / edit
+
+    protected $rules = [
+        'company_name' => 'required|string|max:255',
+        'job_title' => 'required|string|max:255',
+        'joining_date' => 'required|date',
+        'is_current' => 'required',
+        'expected_notice' => 'required|string|max:255',
+    ];
+
+    public function mount()
+    {
+        $this->loadEmployment();
+    }
+
+    public function loadEmployment()
+    {
+        $this->employments = Emp::where('user_id', Auth::id())->get();
+    }
+
+    public function resetFields()
+    {
+        $this->employment_id = null;
+        $this->company_name = "";
+        $this->job_title = "";
+        $this->joining_date = "";
+        $this->is_current = "yes";
+        $this->expected_notice = "15 Days or Less";
+    }
+
+    public function openAddModal()
+    {
+        $this->mode = "create";
+        $this->resetFields();
+        $this->dispatch('show-employment-modal');
+    }
+
+    public function openEditModal($id)
+    {
+        $this->mode = "edit";
+
+        $emp = Emp::find($id);
+
+        $this->employment_id = $id;
+        $this->company_name = $emp->company_name;
+        $this->job_title = $emp->job_title;
+        $this->joining_date = $emp->joining_date;
+        $this->is_current = $emp->is_current;
+        $this->expected_notice = $emp->expected_notice;
+
+        $this->dispatch('show-employment-modal');
+    }
+
+    public function saveEmployment()
+    {
+        $this->validate();
+
+        Emp::create([
+            'user_id' => Auth::id(),
+            'company_name' => $this->company_name,
+            'job_title' => $this->job_title,
+            'joining_date' => $this->joining_date,
+            'is_current' => $this->is_current,
+            'expected_notice' => $this->expected_notice,
+        ]);
+
+        $this->loadEmployment();
+        session()->flash('success', 'Employment added successfully.');
+        $this->dispatch('hide-employment-modal');
+    }
+
+    public function updateEmployment()
+    {
+        $this->validate();
+
+        Emp::where('id', $this->employment_id)->update([
+            'company_name' => $this->company_name,
+            'job_title' => $this->job_title,
+            'joining_date' => $this->joining_date,
+            'is_current' => $this->is_current,
+            'expected_notice' => $this->expected_notice,
+        ]);
+
+        $this->loadEmployment();
+        session()->flash('success', 'Employment updated successfully.');
+        $this->dispatch('hide-employment-modal');
+    }
+
+    public function deleteEmployment($id)
+    {
+        Emp::find($id)->delete();
+        $this->loadEmployment();
+        session()->flash('success', 'Employment deleted.');
+    }
+    public function render()
+    {
+        return view('livewire.user.employment');
+    }
+}

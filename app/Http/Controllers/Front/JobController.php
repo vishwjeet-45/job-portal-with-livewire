@@ -17,6 +17,12 @@ class JobController extends Controller
     {
         $jobId = decrypt($encryptedId);
         $job = Job::where('id',$jobId)->first();
-        dd($job);
+
+        $recommendedJobs = Job::with(['company', 'cities', 'job_category'])
+                ->inRandomOrder()
+                ->take(3)
+                ->get();
+        $alreadyApplied =0;
+        return view('frontend.jobs.details',compact('job','recommendedJobs','alreadyApplied'));
     }
 }

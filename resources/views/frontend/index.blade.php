@@ -5,6 +5,9 @@
         <div class="row mt-4">
             @if (auth()->user())
 
+            @php
+              $user = auth()->user();
+            @endphp
                 <div class="col-lg-3 home_profile">
                     <div class="card sticky-top" style="top: 80px;">
                         <div class="card-body">
@@ -13,7 +16,7 @@
                                 <img src="/assets/default_user.webp" class="candidate_img" alt="user img">
                             </div>
 
-                            <h3 class="text-center candidateName pt-3 pb-1 mb-0">Amit Kumar</h3>
+                            <h3 class="text-center candidateName pt-3 pb-1 mb-0">{{$user->name}}</h3>
                             <p class="text-center designations m-0 p-0">No employment record</p>
                             <p class="text-uppercase text-center pt-2 company mb-1"> No company record</p>
 

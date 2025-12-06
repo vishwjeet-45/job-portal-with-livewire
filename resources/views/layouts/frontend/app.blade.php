@@ -87,4 +87,15 @@
 
     @include('layouts.frontend.footer')
 </body>
+<script>
+   window.addEventListener('login-required', event => {
+        Swal.fire({
+            icon: 'warning',
+            title: 'warning !',
+            text: 'Please login first!',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    });
+</script>
 </html>
