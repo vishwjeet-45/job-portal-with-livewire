@@ -84,5 +84,9 @@ class Job extends Model
         return $this->belongsTo(Employer::class,'employer_id');
     }
 
+    public function job_category()
+    {
+        return $this->belongsTo(FuncationalArea::class, 'funcational_area_id', 'id');
+    }
 
 }

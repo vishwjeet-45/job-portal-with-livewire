@@ -11,11 +11,11 @@
                         <li>
                             <a href="{{ route('admin.jobs.index') }}">Jobs</a>
                             <span class="nottifications bg-danger"><span
-                                    class="d-flex justify-content-center align-items-center">{{ $jobCount ?? '0' }}</span>
+                                    class="d-flex justify-content-center align-items-center">{{ \App\Models\Job::count() ?? '0' }}</span>
                         </li>
                     </ul>
 
-                    <div class="positionrelative_job" id="job_search">
+                    <div class="positionrelative_job d-none" id="job_search">
                         <div class="d-flex search_job_element">
                             <input type="text" id="jobSearchInput" class="w-100 typeText"
                                 placeholder="Search job titles, categories, cities" data-bs-toggle="modal"
@@ -42,8 +42,8 @@
                                             </button>
                         @else
                             <div class="d-flex gap-2">
-                                <a href="{{ route('frontend.login') }}" class="btn btn-outline-primary">Login</a>
-                                <a href="{{ route('frontend.login', ['tab' => 'register']) }}"
+                                <a href="{{ route('login') }}" class="btn btn-outline-primary">Login</a>
+                                <a href="{{ route('register') }}"
                                     class="btn btn-primary">Register</a>
                             </div>
                         @endif

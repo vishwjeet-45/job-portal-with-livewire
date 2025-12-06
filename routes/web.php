@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\State;
 use App\Models\City;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Front\JobController;
 
 
 Route::get('/get-states/{country}', function($countryId) {
@@ -22,7 +23,7 @@ Route::get('/get-cities/{state}', function($stateId) {
 
 Route::get('/', function () {
     return view('frontend.index');
-})->name('index')->middleware('auth');
+})->name('index');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -33,5 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::resource('jobs',JobController::class);
 
 require __DIR__.'/auth.php';

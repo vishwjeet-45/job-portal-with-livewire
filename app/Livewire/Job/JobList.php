@@ -11,6 +11,7 @@ class JobList extends Component
     use WithPagination;
 
     public $search = '';
+    public $col = 3;
 
     protected $queryString = ['search'];
 
@@ -32,7 +33,8 @@ class JobList extends Component
                       });
             })
             ->latest()
-            ->paginate(10);
+            ->paginate(10
+        );
 
         return view('livewire.job.job-list', [
             'jobs' => $jobs
