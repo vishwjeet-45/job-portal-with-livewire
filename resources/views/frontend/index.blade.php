@@ -24,7 +24,7 @@
                             </p>
                             <div class="d-flex justify-content-center ">
                                 <div class="d-flex justify-content-center">
-                                    <a class="view_profile" href="https://jobs.ddtsoftwareandecommerce.com/profile">View
+                                    <a class="view_profile" href="{{ route('profile.edit') }}">View
                                         profile</a>
                                 </div>
                             </div>

@@ -33,7 +33,7 @@ class JobList extends Component
                       });
             })
             ->latest()
-            ->paginate(10);
+            ->paginate(1);
 
         return view('livewire.job.job-list', [
             'jobs' => $jobs

@@ -28,6 +28,18 @@ class Employment extends Component
         'expected_notice' => 'required|string|max:255',
     ];
 
+    protected $listeners =['openEmModal'];
+    public $modalOpen =false;
+
+    public function openEmModal()
+    {
+        $this->modalOpen = true;
+    }
+
+    public function closeModel()  {
+        $this->modalOpen = false;
+    }
+
     public function mount()
     {
         $this->loadEmployment();
@@ -52,6 +64,7 @@ class Employment extends Component
     {
         $this->mode = "create";
         $this->resetFields();
+        $this->modalOpen = true;
         $this->dispatch('show-employment-modal');
     }
 
@@ -68,6 +81,7 @@ class Employment extends Component
         $this->is_current = $emp->is_current;
         $this->expected_notice = $emp->expected_notice;
 
+        $this->modalOpen = true;
         $this->dispatch('show-employment-modal');
     }
 
@@ -86,6 +100,7 @@ class Employment extends Component
 
         $this->loadEmployment();
         session()->flash('success', 'Employment added successfully.');
+        $this->modalOpen = false;
         $this->dispatch('hide-employment-modal');
     }
 
@@ -103,6 +118,7 @@ class Employment extends Component
 
         $this->loadEmployment();
         session()->flash('success', 'Employment updated successfully.');
+        $this->modalOpen = false;
         $this->dispatch('hide-employment-modal');
     }
 

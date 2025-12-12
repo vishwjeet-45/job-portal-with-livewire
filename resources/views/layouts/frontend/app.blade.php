@@ -25,6 +25,8 @@
         $candidate = auth()->user();
     @endphp
     @include('layouts.frontend.header')
+
+
     <main>
         <section>
             <div class="offcanvas offcanvas-end" tabindex="-1" id="profileSideBar"
@@ -50,7 +52,7 @@
                                 <p class="designations_profile mb-1 p-0">No employment record</p>
                             @endif
 
-                            <a href="#" class="profileEdit text-decoration-none">View
+                            <a href="{{ route('profile.edit') }}" class="profileEdit text-decoration-none">View
                                 & Update Profile</a>
                         </div>
                     </div>
@@ -58,7 +60,7 @@
                     <div class="mt-3">
                         <ul class="list-unstyled">
                             <li class="profile_list">
-                                <a href="#"
+                                <a href="{{route('profile.edit')}}"
                                     class="d-flex gap-3 text-decoration-none text-dark">
                                     <i class="ri-settings-2-line"></i>
                                     <span>Settings</span>
@@ -86,7 +88,10 @@
     </main>
 
     @include('layouts.frontend.footer')
+
+
 </body>
+@stack('js')
 <script>
    window.addEventListener('login-required', event => {
         Swal.fire({

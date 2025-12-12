@@ -20,6 +20,8 @@ class Education extends Component
         'to_year' => 'required|digits:4'
     ];
 
+    protected $listeners = ['openModal'];
+
     public function mount()
     {
         $this->loadEducation();

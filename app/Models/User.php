@@ -107,4 +107,31 @@ class User extends Authenticatable
         return $this->hasMany(JobApplication::class);
     }
 
+    public function skills()
+    {
+        return $this->morphToMany(Skill::class, 'skillable')
+            ->withPivot('experience_years', 'experience_months')
+            ->withTimestamps();
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
+
+    public function candidate()
+    {
+        return $this->hasOne(Candidate::class);
+    }
+
+
 }

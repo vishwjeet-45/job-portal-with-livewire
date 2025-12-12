@@ -1,5 +1,9 @@
 <x-form-layout title="Create Role" padding="3">
     <x-dynamic-form :fields="$formFields" form-data="formData" col="3" multiSelect=1 />
+
+
+    <livewire:skill-dropdown  :multiple="false" />
+
 </x-form-layout>
 
 
@@ -55,7 +59,7 @@ ClassicEditor
         const model = $(this).data('model');
         const value = $(this).val();
         console.log(model);
-        if (model) {
+        if (model !='selectedSkill') {
             @this.set(model, value);
             setTimeout(() => {
                 console.log('test2');

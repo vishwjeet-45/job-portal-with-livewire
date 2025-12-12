@@ -94,6 +94,7 @@
   </div>
 @include('layouts.partials.footer')
 @livewireScripts
+@stack('skill_form')
 </body>
 
 @stack('js')

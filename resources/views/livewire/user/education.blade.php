@@ -3,7 +3,7 @@
     <!-- Header -->
 
 
-    <div class="card">
+    <div class="card mb-3">
         <div class="card-body">
              <div class="d-flex justify-content-between align-items-center">
                 <span>
@@ -53,7 +53,7 @@
     <!-- Modal -->
     @if($modalOpen)
         <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
 
                     <div class="modal-header">

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('skill_id')->constrained()->onDelete('cascade');
             $table->morphs('skillable');
+            $table->integer('experience_years')->nullable();
+            $table->integer('experience_months')->nullable();
             $table->timestamps();
         });
     }
