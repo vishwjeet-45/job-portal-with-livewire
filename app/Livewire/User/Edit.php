@@ -126,9 +126,8 @@ class Edit extends Component
             'formData.state_id' => 'required|exists:states,id',
             'formData.city_id' => 'required|exists:cities,id',
             'formData.mobile_number' =>'required',
-            'formData.gender' => ['required'],
-            'formData.industry_type' => ['required'],
-            'formData.experience_type' => ['required'],
+            'formData.industry_type' => 'required',
+            'formData.experience_type' => 'required',
             ];
         }
         return
@@ -146,7 +145,6 @@ class Edit extends Component
     public function save()
     {
         $this->dispatch('refresh-select2', id: 'editModal');
-        // dd($this->formData);
         $this->validate();
         $user = User::find($this->id);
         if(!isset($this->formData['password']) && !$this->formData['password']){
@@ -165,6 +163,7 @@ class Edit extends Component
         }
 
 
+        // dd($this->formData);
         $user->update($this->formData);
 
         session()->flash('message', 'User updated successfully!');

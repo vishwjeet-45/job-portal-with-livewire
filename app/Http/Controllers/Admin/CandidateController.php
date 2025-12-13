@@ -48,9 +48,9 @@ class CandidateController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     return '
-                        <button class="btn btn-outline-warning btn-sm mx-2" onclick="openEditModal(' . e((string) $row->id) . ')">
+                        <a class="btn btn-outline-warning btn-sm mx-2" href="' . route('admin.candidates.edit', $row->id) . '">
                             <i class="ri-edit-box-line"></i>
-                        </button>
+                        </a>
                         <button type="button"
                                 class="btn btn-outline-danger btn-sm delete-button"
                                 data-url="' . route('admin.candidates.destroy', $row->id) . '"

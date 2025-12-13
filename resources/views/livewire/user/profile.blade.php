@@ -54,7 +54,7 @@
 
                                 <span class="d-felx gap-3 text-muted textmuteds">
                                     <i class="ri-shopping-bag-line"></i>
-                                    <span>{{$user->candidate->availability ? 'Available within '.$user->candidate->availability.' days' : ' Availability not specified' }}</span>
+                                    <span>{{$user->candidate?->availability ? 'Available within '.$user->candidate->availability.' days' : ' Availability not specified' }}</span>
                                     | <span class="">
                                         {{ \App\Models\User::INDUSTRY_TYPES[$user->industry_type] ?? '' }}
                                     </span>

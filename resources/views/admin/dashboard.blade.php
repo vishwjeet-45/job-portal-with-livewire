@@ -13,7 +13,7 @@
                         </span>
                         <div class="d-flex justify-content-end">
                             <span>
-                                <h1 class="mt-3 pt-1 text-end dashboardText"> {{$candidates ?? 0}} </h1>
+                                <h1 class="mt-3 pt-1 text-end dashboardText"> {{$total['candidate'] ?? 0}} </h1>
                                 <h6 class="text-muted mb-0 fw-normal">Total Condidates</h6>
                             </span>
                         </div>
@@ -31,7 +31,7 @@
                         </span>
                         <div class="d-flex justify-content-end">
                             <span>
-                                <h1 class="mt-3 pt-1 text-end dashboardText"> {{ $employercount ?? 0 }} </h1>
+                                <h1 class="mt-3 pt-1 text-end dashboardText"> {{ $total['employer'] ?? 0 }} </h1>
                                 <h6 class="text-muted mb-0 fw-normal">Total Active Employers</h6>
                             </span>
                         </div>
@@ -49,7 +49,7 @@
                         </span>
                         <div class="d-flex justify-content-end">
                             <span>
-                                <h1 class="mt-3 pt-1 text-end dashboardText"> {{ $jobcount ?? 0}} </h1>
+                                <h1 class="mt-3 pt-1 text-end dashboardText"> {{ $total['jobs'] ?? 0}} </h1>
                                 <h6 class="text-muted mb-0 fw-normal">Total Active Jobs</h6>
                             </span>
                         </div>
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="col-md-4 col-sm-6 col-12">
+        {{-- <div class="col-md-4 col-sm-6 col-12">
             <div class="card">
                 <a href="{{ route('admin.job.approved-list') }}" target="_blank">
                     <div class="card-body d-flex  justify-content-between align-items-center">
@@ -74,7 +74,7 @@
                     </div>
                 </a>
             </div>
-        </div>
+        </div>--}}
 
 
     </div>
