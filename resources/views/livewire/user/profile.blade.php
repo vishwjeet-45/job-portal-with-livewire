@@ -5,11 +5,11 @@
                 <div class="col-md-3 d-flex justify-content-center align-items-center ">
                     <div class="position-relative ">
                         <form id="profileImageUploadForm" enctype="multipart/form-data">
-                            <img class="profiles2" src="/default_user.webp" id="profile_image">
+                            <img class="profiles2" src="{{ asset('storage/'.$user->profile_img) ?? ''}}" id="profile_image">
                             <label for="upload_profile_img" class="set_profile_image">
                                 <i class="ri-camera-line"></i>
                             </label>
-                            <input type="file" class="d-none" name="profile_image" accept="image, jpg, png"
+                            <input type="file" class="d-none" wire:model="photo" accept="image, jpg, png"
                                 alt="image upload" id="upload_profile_img">
                         </form>
                     </div>
@@ -54,7 +54,7 @@
 
                                 <span class="d-felx gap-3 text-muted textmuteds">
                                     <i class="ri-shopping-bag-line"></i>
-                                    <span>{{$user->mobile_number ? 'Available within 90 days' : ' Availability not specified' }}</span>
+                                    <span>{{$user->candidate->availability ? 'Available within '.$user->candidate->availability.' days' : ' Availability not specified' }}</span>
                                     | <span class="">
                                         {{ \App\Models\User::INDUSTRY_TYPES[$user->industry_type] ?? '' }}
                                     </span>
@@ -162,7 +162,21 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Add availability to join <span class="text-danger">*</span></label>
-                        <input type="text" wire:model="availability" class="form-control">
+                        <select wire:model="availability"  class="form-control">
+                            <option>-- Select Availability--</option>
+                            <option value="15"@if($availability == 15)selected @endif>
+                                15 Days
+                            </option>
+                            <option value="30" @if($availability == 30)selected @endif>
+                                1 Month
+                            </option>
+                            <option value="60" @if($availability == 60)selected @endif>
+                                2 Months
+                            </option>
+                            <option value="90" @if($availability == 90)selected @endif>
+                                3 Months
+                            </option>
+                        </select>
                         @error('availability') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 

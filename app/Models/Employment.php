@@ -12,6 +12,7 @@ class Employment extends Model
         "job_title",
         "joining_date",
         "is_current",
-        "expected_notice"
+        "expected_notice",
+        'end_date'
     ];
 }

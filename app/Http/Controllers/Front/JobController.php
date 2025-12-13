@@ -13,10 +13,8 @@ class JobController extends Controller
         return view('frontend.jobs.index');
     }
 
-    public function show(Request $request,$encryptedId)
-    {
-        $jobId = decrypt($encryptedId);
-        $job = Job::where('id',$jobId)->first();
+    public function show(Request $request,$slug){
+        $job = Job::where('slug',$slug)->first();
 
         $recommendedJobs = Job::with(['company', 'cities', 'job_category'])
                 ->inRandomOrder()

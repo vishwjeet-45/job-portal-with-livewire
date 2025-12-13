@@ -1,10 +1,13 @@
 @extends('layouts.frontend.app')
 
 @section('content')
+@php
+$user = auth()->user();
+@endphp
     <div class="container">
         <div class="row mt-4">
             <div class="col-md-12 mb-3">
-                <livewire:user.profile />
+                <livewire:user.profile :user="$user"/>
             </div>
 
             <div class="col-md-12">
@@ -54,7 +57,7 @@
 
                                         <li>
                                             <span> Personal details</span>
-                                            <button class="text-primary border-0 bg-transparent" onclick="clickButtion('openEditModal')">
+                                            <button class="text-primary border-0 bg-transparent" onclick="clickButtion('openPdModal')">
                                                 Add
                                             </button>
                                         </li>
@@ -65,11 +68,12 @@
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <livewire:user.resume-upload />
-                        <livewire:user.skill/>
-                        <livewire:user.education />
-                        <livewire:user.employment />
-                        <livewire:user.profile-summary />
+                        <livewire:user.resume-upload :user="$user" />
+                        <livewire:user.skill :user="$user"/>
+                        <livewire:user.education  :user="$user"/>
+                        <livewire:user.employment  :user="$user"/>
+                        <livewire:user.profile-summary :user="$user"/>
+                        @livewire('user.details',['user'=>$user])
 
                     </div>
                 </div>

@@ -20,8 +20,11 @@
                         <tr>
                             <th scope="col" style="width: 50px;">S.N</th>
                             <th scope="col">Name</th>
+                            <th>Skills</th>
+                            <th>Job Title</th>
+                            <th>Current Company</th>
                             <th scope="col" >Phone</th>
-                            <th>Status</th>
+                            <th>Experienc</th>
                             <th scope="col" style="text-align: right;">Actions</th>
                         </tr>
                     </thead>
@@ -50,7 +53,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         let url = "/admin/candidates";
-        initializeDataTable('#dataTable', url, ['id','name','mobile_number','status','action'], [[1, 'desc']], true);
+        initializeDataTable('#dataTable', url, ['id','name','skills.name','employments.job_title','employments.company_name','mobile_number','experience_type','action'], [[1, 'desc']], true);
     });
 </script>
 @endpush

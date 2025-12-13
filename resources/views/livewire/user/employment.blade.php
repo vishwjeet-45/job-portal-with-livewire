@@ -96,17 +96,28 @@
                             <div class="col-md-6">
                                 <label class="form-label">Is this your current employment? *</label>
                                 <div class="d-flex gap-4">
-                                    <label><input type="radio" wire:model="is_current" value="yes"> Yes</label>
-                                    <label><input type="radio" wire:model="is_current" value="no"> No</label>
+                                    <label><input type="radio" wire:model.live="is_current" value="yes"> Yes</label>
+                                    <label><input type="radio" wire:model.live="is_current" value="no"> No</label>
                                 </div>
                             </div>
 
                             <!-- expected -->
-                            <div class="col-md-6">
-                                <label class="form-label">Expected Notice*</label>
-                                <input type="text" wire:model="expected_notice" class="form-control">
-                                @error('expected_notice') <small class="text-danger">{{ $message }}</small> @enderror
-                            </div>
+                            @if($is_current == 'yes')
+                                <div class="col-md-6">
+                                    <label class="form-label">Expected Notice *</label>
+                                    <input type="text" wire:model="expected_notice" class="form-control">
+                                    @error('expected_notice') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            @endif
+
+                            <!-- End Date ONLY when is_current = no -->
+                            @if($is_current == 'no')
+                                <div class="col-md-6">
+                                    <label class="form-label">End Date *</label>
+                                    <input type="date" wire:model="end_date" class="form-control">
+                                    @error('end_date') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            @endif
                         </div>
                     </div>
 

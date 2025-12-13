@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Carbon\Carbon;
 
 
 class User extends Authenticatable
@@ -107,12 +108,26 @@ class User extends Authenticatable
         return $this->hasMany(JobApplication::class);
     }
 
+    public function appliedJobs()
+    {
+        return $this->belongsToMany(Job::class, 'job_applications')
+                    ->withPivot('status')
+                    ->withTimestamps();
+    }
+
+
     public function skills()
     {
         return $this->morphToMany(Skill::class, 'skillable')
             ->withPivot('experience_years', 'experience_months')
             ->withTimestamps();
     }
+
+    public function getSkillNameAttribute()
+    {
+        return $this->skills->pluck('name')->implode(', ');
+    }
+
 
     public function country()
     {
@@ -133,5 +148,45 @@ class User extends Authenticatable
         return $this->hasOne(Candidate::class);
     }
 
+    public function languages()
+    {
+        return $this->morphToMany(Language::class, 'languageable');
+    }
+
+    public function educations()
+    {
+        return $this->hasMany(Education::class);
+    }
+
+    public function employments()
+    {
+        return $this->hasMany(Employment::class);
+    }
+
+    public function getTotalExperienceAttribute()
+    {
+        $totalMonths = $this->employments->sum(function ($employment) {
+            $start = Carbon::parse($employment->joining_date);
+            $end = $employment->end_date
+                ? Carbon::parse($employment->end_date)
+                : Carbon::parse($employment->created_at);
+            return $start->diffInMonths($end);
+        });
+        $years  = intdiv($totalMonths, 12);
+        $months = $totalMonths % 12;
+
+        return "{$years} Years {$months} Months";
+    }
+
+
+    public function currentEmployment()
+    {
+        return $this->employments()->where('is_current','yes');
+    }
+
+    public function getJobTitleAttribute()
+    {
+        return $this->employments->pluck('job_title')->implode(', ') ?? null;
+    }
 
 }

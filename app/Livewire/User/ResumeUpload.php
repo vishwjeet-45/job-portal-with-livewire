@@ -11,23 +11,32 @@ class ResumeUpload extends Component
 
     public $resume;
     public $uploadedResume;
+    public $user;
 
-    public function mount()
+    public function mount($user)
     {
-        $this->uploadedResume = auth()->user()->profile_img;
+        $this->user =$user;
+        $candidate = $user?->candidate;
+        $this->uploadedResume = $candidate?->resume;
     }
 
     public function uploadResume()
     {
         $this->validate([
-            'resume' => 'required|mimes:pdf,doc,docx,rtf|max:2048',
+            'resume' => 'required|mimes:pdf,doc,docx,rtf',
         ]);
 
         $filePath = $this->resume->store('resumes', 'public');
 
-        $user = Auth::user();
-        $user->profile_img = $filePath;
-        $user->save();
+        $user = $this->user;
+        // $user->profile_img = $filePath;
+        $candidate = $user->candidate()->firstOrCreate([
+            'user_id' => $user->id
+        ]);
+
+        $candidate->resume = $filePath;
+        $candidate->save();
+        // $user->save();
 
         $this->reset('resume');
 

@@ -26,10 +26,15 @@ class Edit extends Component
 
     protected $listeners = ['setData'];
 
-    public function mount($usertype =null)
+    public function mount($usertype =null,$user=null)
     {
+        $this->user = $user;
         $this->usertype = $usertype;
         $this->buildForm();
+        if($user)
+        {
+            $this->loadUser($user?->id);
+        }
         // dd($this->id);
     }
 
@@ -166,6 +171,7 @@ class Edit extends Component
 
         $this->dispatch('modal-hide', id: 'editModal');
         $this->dispatch('refreshTable', id: 'dataTable');
+        $this->dispatch('refresh-select2', id: 'editModal');
     }
     public function render()
     {

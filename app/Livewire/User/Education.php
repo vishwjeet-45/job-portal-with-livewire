@@ -12,6 +12,8 @@ class Education extends Component
     public $editId = null;
     public $modalOpen = false;
 
+    public $user;
+
     protected $rules = [
         'course' => 'required',
         'university' => 'required',
@@ -22,14 +24,15 @@ class Education extends Component
 
     protected $listeners = ['openModal'];
 
-    public function mount()
+    public function mount($user)
     {
+        $this->user = $user;
         $this->loadEducation();
     }
 
     public function loadEducation()
     {
-        $this->educations = Ed::where('user_id', Auth::id())->get();
+        $this->educations = Ed::where('user_id', $this->user?->id)->get();
     }
 
     public function openModal()
@@ -58,7 +61,7 @@ class Education extends Component
         Ed::updateOrCreate(
             ['id' => $this->editId],
             [
-                'user_id' => Auth::id(),
+                'user_id' => $this->user->id,
                 'course' => $this->course,
                 'university' => $this->university,
                 'course_type' => $this->course_type,

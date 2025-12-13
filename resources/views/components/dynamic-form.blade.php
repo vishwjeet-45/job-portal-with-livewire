@@ -28,7 +28,7 @@
 
      @case('select')
     @php
-        $isMulti = ($multiSelect && in_array($name, ['city_id', 'languages']));
+        $isMulti = ($multiSelect && in_array($name, ['city_id', 'languages','skill']));
 
         $selectedValues = old($formData.'.'.$name, data_get($this, $formData.'.'.$name));
         if ($selectedValues instanceof Illuminate\Support\Collection) {
@@ -36,25 +36,32 @@
         }
     @endphp
 
-    <select id="{{ $name }}"
-        data-model="{{ $formData }}.{{ $name }}"
-        class="form-control select2 @error("{$formData}.{$name}") is-invalid @enderror"
-        @if($isMulti) multiple @endif >
+         @if ($name=='skill1')
+             <livewire:skill-dropdown  :multiple="true" />
+        @else
+            <select id="{{ $name }}"
+                data-model="{{ $formData }}.{{ $name }}"
+                class="form-control select2 @error("{$formData}.{$name}") is-invalid @enderror"
+                @if($isMulti) multiple @endif >
 
-        <option value="">-- Select {{ $field['label'] }} --</option>
-
-        @foreach ($field['options'] ?? [] as $val => $label)
-            <option value="{{ $val }}"
-                @if(is_array($selectedValues) && in_array($val, $selectedValues))
-                    selected
-                @elseif($selectedValues == $val)
-                    selected
+                <option value="">-- Select {{ $field['label'] }} --</option>
+                @if ($name=='skill')
+                    <!-- <option value="add_new">+ Add New Skill</option> -->
                 @endif
-            >
-                {{ $label }}
-            </option>
-        @endforeach
-    </select>
+
+                @foreach ($field['options'] ?? [] as $val => $label)
+                    <option value="{{ $val }}"
+                        @if(is_array($selectedValues) && in_array($val, $selectedValues))
+                            selected
+                        @elseif($selectedValues == $val)
+                            selected
+                        @endif
+                    >
+                        {{ $label }}
+                    </option>
+                @endforeach
+            </select>
+         @endif
     @break
 
 

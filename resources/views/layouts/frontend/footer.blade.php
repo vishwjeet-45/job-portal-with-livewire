@@ -35,7 +35,7 @@
 
 </footer>
 
-
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <!-- Slick JS -->
@@ -43,9 +43,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
 </script>
+<!--- select 2-->
+{{-- <script src="assets/select2/select2.full.min.js"></script>
+ <script src="assets/select2/select2.init.js"></script>
+ <script src="assets/select2/select2.min.js"></script> --}}
 
 <script src="{{ asset('assets/frontend/select2/select2.full.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/select2/select2.init.js') }}"></script>
 <script src="{{ asset('assets/frontend/select2/select2.min.js') }}"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
+
+<!--- sweet alert-->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('assets/frontend/script/script.js') }}"></script>

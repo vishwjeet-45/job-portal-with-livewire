@@ -12,6 +12,7 @@ class JobList extends Component
 
     public $search = '';
     public $col = 3;
+    protected $paginationTheme = 'bootstrap';
 
     protected $queryString = ['search'];
 

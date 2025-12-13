@@ -90,7 +90,7 @@
                                     @endphp
 
                                     @forelse($skills as $skill)
-                                        <li class="me-2">{{ $skill }}</li>
+                                        <li class="me-2">{{ $skill->name }}</li>
                                     @empty
                                         <li>No skills listed</li>
                                     @endforelse
@@ -106,7 +106,7 @@
                     <div class="card-body">
                         <h3 class="sub_headings">About company</h3>
                         <p class="fs14 text-muted">
-                            {{ strip_tags($job->company->employer_detail) }}
+                            {{ strip_tags($job->company->description) }}
                         </p>
                         <div class="companyinfo mt-2">
                             <h3 class="sub_headings">Company Info</h3>

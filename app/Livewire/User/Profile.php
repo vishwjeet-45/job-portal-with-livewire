@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use App\Models\{State,City};
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Auth;
 
 class Profile extends Component
 {
@@ -32,9 +33,9 @@ class Profile extends Component
 
     protected $listeners =['openEditModal'];
 
-    public function mount()
+    public function mount($user)
     {
-        $this->user = auth()->user();
+        $this->user = $user;
         $this->states = State::where('country_id', $this->user->country_id)->get();
         // dd($this->states);
 
@@ -68,7 +69,7 @@ class Profile extends Component
         $this->country_id = $this->user->country_id;
         $this->state_id = $this->user->state_id;
         $this->city_id = $this->user->city_id;
-        $this->availability = $this->user->availability;
+        $this->availability = $this->user->candidate?->availability;
         $this->gender = $this->user->gender;
         $this->industry_type = $this->user->industry_type;
         $this->experience_type = $this->user->experience_type;
@@ -107,10 +108,20 @@ class Profile extends Component
             'state_id'      => $this->state_id,
             'city_id'       => $this->city_id,
             'gender'     => $this->gender,
-            'availability' => $this->availability,
             'industry_type'    => $this->industry_type,
             'experience_type' => $this->experience_type,
         ]);
+
+        if($this->availability)
+        {
+            $user = $this->user;
+            $candidate = $user->candidate()->firstOrCreate([
+                'user_id' => $user->id
+            ]);
+
+            $candidate->availability = $this->availability;
+            $candidate->save();
+        }
 
         $this->showEditModal = false;
         // $this->user = auth()->user();
@@ -124,10 +135,9 @@ class Profile extends Component
             'photo' => 'image|max:2048'
         ]);
 
-        $fileName = time() . '.' . $this->photo->getClientOriginalExtension();
-        $this->photo->storeAs('public/profile', $fileName);
+       $filePath = $this->photo->store('profile_img', 'public');
 
-        $this->user->update(['profile_photo' => $fileName]);
+        $this->user->update(['profile_img' => $filePath]);
 
         $this->dispatch('photo-updated');
 

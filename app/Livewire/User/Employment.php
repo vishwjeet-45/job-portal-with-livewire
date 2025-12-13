@@ -17,15 +17,18 @@ class Employment extends Component
     public $joining_date;
     public $is_current = "yes";
     public $expected_notice = "15 Days or Less";
+    public $end_date;
 
-    public $mode = "create"; // create / edit
+    public $mode = "create";
+    public $user;
 
     protected $rules = [
         'company_name' => 'required|string|max:255',
         'job_title' => 'required|string|max:255',
         'joining_date' => 'required|date',
         'is_current' => 'required',
-        'expected_notice' => 'required|string|max:255',
+        'expected_notice' => 'required_if:is_current,yes',
+        'end_date' => 'required_if:is_current,no|date',
     ];
 
     protected $listeners =['openEmModal'];
@@ -36,18 +39,24 @@ class Employment extends Component
         $this->modalOpen = true;
     }
 
+    public function updatedIsCurrent($value)
+    {
+        $this->is_current = $value;
+    }
+
     public function closeModel()  {
         $this->modalOpen = false;
     }
 
-    public function mount()
+    public function mount($user)
     {
+        $this->user = $user;
         $this->loadEmployment();
     }
 
     public function loadEmployment()
     {
-        $this->employments = Emp::where('user_id', Auth::id())->get();
+        $this->employments = Emp::where('user_id', $this->user?->id)->get();
     }
 
     public function resetFields()
@@ -58,6 +67,7 @@ class Employment extends Component
         $this->joining_date = "";
         $this->is_current = "yes";
         $this->expected_notice = "15 Days or Less";
+        $this->end_date ='';
     }
 
     public function openAddModal()
@@ -80,6 +90,7 @@ class Employment extends Component
         $this->joining_date = $emp->joining_date;
         $this->is_current = $emp->is_current;
         $this->expected_notice = $emp->expected_notice;
+        $this->end_date = $emp->end_date;
 
         $this->modalOpen = true;
         $this->dispatch('show-employment-modal');
@@ -90,12 +101,13 @@ class Employment extends Component
         $this->validate();
 
         Emp::create([
-            'user_id' => Auth::id(),
+            'user_id' => $this->user->id,
             'company_name' => $this->company_name,
             'job_title' => $this->job_title,
             'joining_date' => $this->joining_date,
             'is_current' => $this->is_current,
             'expected_notice' => $this->expected_notice,
+            'end_date' => empty($this->end_date) ? null : $this->end_date
         ]);
 
         $this->loadEmployment();
@@ -114,6 +126,7 @@ class Employment extends Component
             'joining_date' => $this->joining_date,
             'is_current' => $this->is_current,
             'expected_notice' => $this->expected_notice,
+            'end_date' => empty($this->end_date) ? null : $this->end_date
         ]);
 
         $this->loadEmployment();

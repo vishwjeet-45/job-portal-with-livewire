@@ -15,6 +15,7 @@ class Skill extends Component
     public $newSkill;
     public $editId = null;
     public $modalOpen =false;
+    public $user;
 
     protected $listeners = ['openSkillModal','closeModel'];
 
@@ -29,8 +30,9 @@ class Skill extends Component
         $this->modalOpen = false;
     }
 
-    public function mount()
+    public function mount($user)
     {
+        $this->user = $user;
         $this->loadSkills();
         $this->loadUserSkills();
     }
@@ -42,17 +44,17 @@ class Skill extends Component
 
     public function loadUserSkills()
     {
-        $this->userSkills = Auth::user()
+        $this->userSkills = $this->user?->skills ? $this->user
             ->skills()
             ->withPivot('experience_years', 'experience_months')
-            ->get();
+            ->get() : [];
     }
 
 
     public function saveSkill()
     {
 
-         $this->toast('success', 'Skill added successfully!');
+        $this->toast('success', 'Skill added successfully!');
         $this->loadUserSkills();
         $this->validate([
             'newSkill' => 'required|string',
@@ -62,13 +64,14 @@ class Skill extends Component
 
         $skill = userSkill::firstOrCreate(['name' => $this->newSkill]);
         $this->skill_id = $skill->id;
+        // dd($this->editId,$this->user->skills());
         if ($this->editId) {
-            Auth::user()->skills()->updateExistingPivot($this->editId, [
+            $this->user->skills()->updateExistingPivot($this->editId, [
                 'experience_years' => $this->experience_years,
                 'experience_months' => $this->experience_months,
             ]);
         } else {
-            Auth::user()->skills()->attach($this->skill_id, [
+            $this->user->skills()->attach($this->skill_id, [
                 'experience_years' => $this->experience_years,
                 'experience_months' => $this->experience_months,
             ]);
@@ -89,7 +92,7 @@ class Skill extends Component
     public function edit($skillId)
     {
         $this->resetValidation();
-        $skill = Auth::user()->skills()->where('skill_id', $skillId)->first();
+        $skill = $this->user->skills()->where('skill_id', $skillId)->first();
 
         $this->editId = $skillId;
         $this->newSkill = $skill->name;
@@ -102,7 +105,7 @@ class Skill extends Component
 
     public function delete($skillId)
     {
-        Auth::user()->skills()->detach($skillId);
+        $this->user->skills()->detach($skillId);
         $this->loadUserSkills();
     }
 

@@ -1,9 +1,31 @@
 <x-form-layout title="Create Role" padding="3">
     <x-dynamic-form :fields="$formFields" form-data="formData" col="3" multiSelect=1 />
+    @if ($skillModal)
 
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.4);" id="createDetailsModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Skill</h5>
+                    <button type="button" class="close" wire:click="closeSkill">×</button>
+                </div>
 
-    <livewire:skill-dropdown  :multiple="false" />
+                <div class="modal-body">
+                    <label>Skill Name</label>
+                    <input type="text" class="form-control" wire:model="newSkill">
+                    @error('newSkill')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
 
+                <div class="modal-footer">
+                    <button type="button" wire:click="closeSkill">Close</button>
+                    <button type="button" class="btn btn-primary" wire:click="saveSkill">Save Skill</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </x-form-layout>
 
 

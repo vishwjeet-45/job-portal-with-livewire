@@ -34,17 +34,18 @@ class CandidateController extends Controller
                 ->addColumn('name', function ($row) {
                     return "<span class='nameTexts'>{$row->name}</span><br>{$row->email}";
                 })
-                ->addColumn('status', function ($row) {
-                        $checked = $row->status == 'active' ? 'checked' : '';
-                        return '
-                            <div class="form-check form-switch">
-                                <input class="form-check-input toggle-status" type="checkbox"
-                                    data-id="' . $row->id . '"
-                                    ' . $checked . '>
-                            </div>
-                        ';
-                    })
-
+                 ->addColumn('experience_type', function ($row) {
+                    return $row->total_experience;
+                })
+                ->addColumn('skills.name', function ($row) {
+                    return $row->skill_name ? $row->skill_name : 'N/A';
+                })
+                ->addColumn('employments.job_title', function ($row) {
+                    return $row->job_title ? $row->job_title  : 'N/A';
+                })
+                ->addColumn('employments.company_name', function ($row) {
+                    return $row->currentEmployment->first() ? $row->currentEmployment->first()->company_name : 'N/A';
+                })
                 ->addColumn('action', function ($row) {
                     return '
                         <button class="btn btn-outline-warning btn-sm mx-2" onclick="openEditModal(' . e((string) $row->id) . ')">
@@ -60,10 +61,16 @@ class CandidateController extends Controller
                 })
 
                 ->addIndexColumn()
-                 ->rawColumns(['name', 'action','status'])
+                 ->rawColumns(['name', 'action','experience_type'])
                 ->make(true);
         }
 
         return view('admin.candidates.index', compact('roleName'));
+    }
+
+    public function edit($id)
+    {
+        $user = User::find($id);
+        return view('admin.candidates.edit',compact('user'));
     }
 }

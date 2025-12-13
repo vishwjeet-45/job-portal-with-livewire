@@ -18,7 +18,8 @@ use App\Models\
     City,
     User,
     Job,
-    Employer
+    Employer,
+    Skill
 };
 
 class Create extends Component
@@ -32,15 +33,26 @@ class Create extends Component
     public $description, $website, $facebook_url, $linkedin_url;
 
    public $industries = [];
+
+   public $multiple = true;
     public $industry_types = [];
     public $functional_areas = [];
 
+    public $selectedSkill =[];
+
     public $states = [];
     public $cities = [];
+
+    public $skillModal = false;
+    public $newSkill;
+
+    public $skills = [];
+    protected $listeners = ['closeSkill'];
     public function mount($usertype =null)
     {
         $this->usertype = $usertype;
         $this->industry_types = IndustryType::pluck('name','id')->toArray();
+        $this->skills = Skill::pluck('name', 'id')->toArray();
         $this->buildForm();
     }
 
@@ -63,7 +75,8 @@ class Create extends Component
                 'employment_type' => Job::EMPLOYEMENT_TYPE,
                 'employer_id' => Employer::pluck('company_name', 'id')->toArray(),
                 'status' => Job::STATUSES,
-                'shift' => Job::SHIFT_TYPES
+                'shift' => Job::SHIFT_TYPES,
+                'skill' => $this->skills,
             ],
             excludeColumns: ['slug']
         );
@@ -129,6 +142,35 @@ class Create extends Component
         $this->getValidationRules());
     }
 
+    public function loadSkills()
+    {
+        $this->skills = Skill::pluck('name', 'id')->toArray();
+    }
+
+    public function updatedFormDataSkill($value)
+    {
+        if (is_array($this->formData['skill']) && in_array("add_new", $this->formData['skill'])) {
+            $this->skillModal = true;
+        }
+        $this->buildForm();
+    }
+
+
+    public function saveSkill()
+    {
+
+        // dd('sdf');
+        if ($this->newSkill) {
+            $skill = Skill::firstOrCreate(['name' => $this->newSkill]);
+            $this->newSkill = '';
+            $this->formData['skill'] = $skill->id;
+            $this->loadSkills();
+        }
+        $this->skillModal = false;
+        $this->buildForm();
+
+    }
+
     public function save()
     {
         $this->dispatch('refresh-select3');
@@ -136,13 +178,25 @@ class Create extends Component
         $data = $this->formData;
         $data['city_id'] = array_first($this->formData['city_id']);
         $data['languages'] = array_first($this->formData['languages']);
-        $data['slug'] = Str::slug($data['title']);
+        $data['skill'] = array_first($this->formData['skill']);
+        $skills = (array) $this->formData['skill'];
+        $skillNames = Skill::whereIn('id', $skills)->pluck('name')->toArray();
+        $baseSlug = Str::slug(implode('-', $skillNames));
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Job::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+        $data['slug'] = $slug;
         $job = Job::create($data);
 
 
         $cityIds = (array) $this->formData['city_id'];
         $languages = (array) $this->formData['languages'];
+
         $job->cities()->sync($cityIds);
+        $job->skills()->sync($skills);
         $job->getLanguages()->sync($languages);
 
         $job->created_by = auth()->user()->id;
@@ -155,6 +209,12 @@ class Create extends Component
 
         $this->mount();
         $this->dispatch('success', message: 'Job created successfully!');
+    }
+
+    public function closeSkill()
+    {
+        $this->skillModal = false;
+        $this->buildForm();
     }
     public function render()
     {

@@ -16,10 +16,16 @@ class Candidate extends Model
         'address',
         'date_of_birth',
         'career_break',
+        'marital_status'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function languages()
+    {
+        return $this->morphToMany(Language::class, 'languageable');
     }
 }

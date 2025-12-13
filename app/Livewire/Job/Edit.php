@@ -18,7 +18,8 @@ use App\Models\
     Job,
     Employer,
     IndustryType,
-    Language
+    Language,
+    Skill
 };
 
 class Edit extends Component
@@ -32,12 +33,15 @@ class Edit extends Component
 
     public $states = [];
     public $cities = [];
+    public $skills = [];
     public function mount($id)
     {
         $this->job = Job::find($id);
         $this->industry_types = IndustryType::pluck('name','id')->toArray();
         $this->states = State::where('country_id',$this->job?->country_id)->pluck('name','id')->toArray();
         $this->cities = City::where('state_id',$this->job?->state_id)->pluck('name','id')->toArray();
+
+        $this->skills = Skill::pluck('name', 'id')->toArray();
 
         $this->industries = Industry::where('industry_types_id',$this->job?->industry_type_id)->pluck('name','id')->toArray();
 
@@ -52,6 +56,11 @@ class Edit extends Component
         if($this->job->getLanguages)
         {
             $this->job->languages = $this->job->getLanguages->pluck('id');
+        }
+
+        if($this->job->skills)
+        {
+            $this->job->skill = $this->job->skills->pluck('id');
         }
         $this->buildForm();
 
@@ -69,6 +78,7 @@ class Edit extends Component
                 'country_id' => Country::pluck('name', 'id')->toArray(),
                 'industry_type_id' => $this->industry_types,
                 'languages' => Language::pluck('name','id')->toArray(),
+                'skill' => $this->skills,
                 'industry_id' => $this->industries,
                 'funcational_area_id' => $this->functional_areas,
                 'state_id'   => $this->states ?? [],
@@ -145,17 +155,19 @@ class Edit extends Component
         // dd($this->formData['city_id'], gettype($this->formData['city_id']));
         $cityIds = array_first((array) $this->formData['city_id']);
         $languages = array_first((array) $this->formData['languages']);
+        $skill = array_first((array) $this->formData['skill']);
 
 
         // dd(array_first($cityIds)[0]);
         $data['city_id'] = array_first($cityIds);
+        $data['skill'] = array_first($skill);
         $data['languages'] = array_first($languages);
-        $data['slug'] = Str::slug($data['title']);
         $this->job->update($data);
 
         $job = $this->job;
 
         $job->cities()->sync($cityIds);
+        $job->skills()->sync($skill);
         $job->getLanguages()->sync($languages);
 
         $job->created_by = auth()->user()->id;

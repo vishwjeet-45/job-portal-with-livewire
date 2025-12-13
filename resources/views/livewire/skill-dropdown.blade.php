@@ -1,25 +1,19 @@
 <div>
-    <!-- Skill Dropdown -->
-    <div class="row">
-        <div class="form-group col-{{ $col }}" id="skill">
-            <label class="font-weight-bold">Skill</label>
-            <select class="form-control {{ $multiple ? 'select2' : '' }}"  @if($multiple) multiple data-model="selectedSkill" @else wire:model.live="selectedSkill" @endif>
-                <option value="">Select Skill</option>
+<select class="form-control {{ $multiple ? 'select2' : '' }}"  @if($multiple) multiple data-model="selectedSkill" @else wire:model.live="selectedSkill" @endif>
+    <option value="">Select Skill</option>
 
-                <option value="add_new">+ Add New Skill</option>
+    <option value="add_new">+ Add New Skill</option>
 
-                @foreach($skills as $skill)
-                    <option value="{{ $skill->id }}" @if(
-                        ($multiple && in_array($skill->id, $selectedSkill)) ||
-                        (!$multiple && $selectedSkill == $skill->id)
-                    ) selected @endif>
-                        {{ $skill->name }}
-                    </option>
-                @endforeach
-            </select>
+    @foreach($skills as $skill)
+        <option value="{{ $skill->id }}" @if(
+            ($multiple && in_array($skill->id, $selectedSkill)) ||
+            (!$multiple && $selectedSkill == $skill->id)
+        ) selected @endif>
+            {{ $skill->name }}
+        </option>
+    @endforeach
+</select>
 
-        </div>
-    </div>
 
     <!-- Add Skill Modal -->
     <div class="modal fade" id="addSkillModal" tabindex="-1" data-bs-backdrop="static">

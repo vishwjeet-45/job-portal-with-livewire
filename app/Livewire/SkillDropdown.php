@@ -30,7 +30,6 @@ class SkillDropdown extends Component
 
     public function loadSkills()
     {
-        // dd($this->selectedSkill);
         $this->skills = Skill::orderBy('name')->get();
     }
 
@@ -48,10 +47,7 @@ class SkillDropdown extends Component
             }
             return;
         }
-
-        // SINGLE MODE
         if ($value === "add_new") {
-            // dd($value);
             $this->dispatch('open-skill-modal');
         }
     }

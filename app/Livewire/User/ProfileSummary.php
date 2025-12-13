@@ -10,10 +10,18 @@ class ProfileSummary extends Component
     public $summary;
     public $showModal = false;
 
-    public function mount()
+    public $user;
+
+    protected $listeners =['openPsModal'];
+
+     public function openPSModal(){
+        $this->openModal();
+    }
+
+    public function mount($user)
     {
-        $user = Auth::user();
-        $this->summary = $user->candidate?->summary;
+        $this->user = $user;
+        $this->summary = $user?->candidate ? $user?->candidate?->summary : null;
     }
 
     public function openModal()
@@ -28,8 +36,8 @@ class ProfileSummary extends Component
 
     public function editModal()
     {
-        $user = Auth::user();
-        $this->summary = $user->candidate?->summary;
+        $user = $this->user;
+        $this->summary = $user?->candidate ? $user?->candidate?->summary : null;
         $this->showModal = true;
     }
 
@@ -39,7 +47,7 @@ class ProfileSummary extends Component
             'summary' => 'required|min:5'
         ]);
 
-        $user = Auth::user();
+        $user = $this->user;
         $candidate = $user->candidate()->firstOrCreate([
             'user_id' => $user->id
         ]);

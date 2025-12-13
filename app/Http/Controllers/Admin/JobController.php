@@ -96,7 +96,8 @@ class JobController extends Controller
 
     public function apply_list(Request $request, $id)
     {
-        dd('Comming Soon');
+        $job = Job::find($id);
+       return view('admin.jobs.apply_list',compact('id','job'));
     }
 
 

@@ -15,7 +15,7 @@
         @forelse ($jobs as $job)
             <div class="card mb-2">
                 <div class="card-body">
-                    <a href="{{ route('jobs.show',encrypt($job->id)) }}" class="text-decoration-none text-black">
+                    <a href="{{ route('jobs.show',$job->slug) }}" class="text-decoration-none text-black">
                         <div class="d-flex justify-content-between">
                             <div class="details_container">
                                 <h3 class="sub_headings mt-0">{{ $job->job_title }}</h3>
@@ -71,6 +71,6 @@
     </div>
     <div class="mt-4">
 
-        {{ $jobs->links('pagination::bootstrap-5') }}
+        {{ $jobs->links() }}
     </div>
 </div>

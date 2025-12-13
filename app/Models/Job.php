@@ -31,6 +31,7 @@ class Job extends Model
         'employment_type',
         'work_mode',
         'gender',
+        'skill',
         'languages',
         'industry_type_id',
         'industry_id',
@@ -80,9 +81,11 @@ class Job extends Model
         return $this->belongsTo(State::class);
     }
 
-    public function applications()
+    public function applicants()
     {
-        return $this->hasMany(JobApplication::class);
+        return $this->belongsToMany(User::class, 'job_applications')
+                    ->withPivot('status')
+                    ->withTimestamps();
     }
 
     public function company(){
