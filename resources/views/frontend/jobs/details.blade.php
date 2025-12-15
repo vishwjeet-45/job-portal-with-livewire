@@ -59,7 +59,7 @@
                                     {{ $job->created_at->diffForHumans() }}</span>
                                 Openings: <span class="text-dark openingTime">{{$job->number_of_vacancy}}</span>
                                 Applicants: <span
-                                    class="text-dark openingTime">{{ $job->applications->count() ?? 'N/A' }}</span>
+                                    class="text-dark openingTime">{{ $job->applications ? $job->applications->count() : 0 }}</span>
                             </p>
                             <div class="d-flex justify-content-end gap-2 apply_post">
 
@@ -130,7 +130,7 @@
                     <div class="card-body">
                         @foreach($recommendedJobs as $job)
                             <div class="related_job">
-                                <a href="{{ route('jobs.show', encrypt($job->id)) }}" class="text-dark text-decoration-none">
+                                <a href="{{ route('jobs.show', $job->slug) }}" class="text-dark text-decoration-none">
                                     <div class="d-flex justify-content-between">
                                         <div class="details_container">
                                             <h3 class="sub_headings2 ">
