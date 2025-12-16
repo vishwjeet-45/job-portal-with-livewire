@@ -130,13 +130,17 @@ class Create extends Component
 
     public function rules()
     {
-        $rules = [];
         $rules = [
+        'formData.employer_id' => 'required|exists:employers,id',
         'formData.country_id' => 'required|exists:countries,id',
         'formData.state_id' => 'required|exists:states,id',
         'formData.city_id' => 'required|exists:cities,id',
         'formData.gender' => ['required', Rule::in(User::GENDER)],
         'formData.industry_type_id' => 'required|exists:industry_types,id',
+        'formData.skill'   => ['required', 'array', 'min:1'],
+        'formData.skill.*' => ['required', 'integer', 'exists:skills,id'],
+        'formData.languages'   => ['required', 'array', 'min:1'],
+        'formData.languages.*' => ['required', 'integer', 'exists:languages,id'],
         ];
         return array_merge($rules,
         $this->getValidationRules());
@@ -173,6 +177,8 @@ class Create extends Component
 
     public function save()
     {
+        // dd($this->formData);
+
         $this->dispatch('refresh-select3');
         $this->validate();
         $data = $this->formData;

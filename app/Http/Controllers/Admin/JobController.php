@@ -24,6 +24,9 @@ class JobController extends Controller
                 ->filter(function ($q) use ($request) {
                     $this->filterService->handle($request, $q);
                 })
+                ->addColumn('views', function($row){
+                    return $row->applicants ? $row->applicants->count() : 0;
+                })
                 ->addColumn('title', function ($row) {
                     $url = route('admin.job.apply-list', $row->id); // if you need job id
 

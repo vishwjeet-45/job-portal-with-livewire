@@ -44,7 +44,7 @@
                 class="form-control select2 @error("{$formData}.{$name}") is-invalid @enderror"
                 @if($isMulti) multiple @endif >
 
-                <option value="">-- Select {{ $field['label'] }} --</option>
+                <option value=""  disabled hidden>-- Select {{ $field['label'] }} --</option>
                 @if ($name=='skill')
                     <!-- <option value="add_new">+ Add New Skill</option> -->
                 @endif

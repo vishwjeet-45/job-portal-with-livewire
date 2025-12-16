@@ -142,6 +142,10 @@ class Edit extends Component
         'formData.city_id' => 'required|exists:cities,id',
         'formData.gender' => ['required', Rule::in(User::GENDER)],
         'formData.industry_type_id' => 'required|exists:industry_types,id',
+         'formData.skill'   => ['required', 'array', 'min:1'],
+        'formData.skill.*' => ['required', 'integer', 'exists:skills,id'],
+        'formData.languages'   => ['required', 'array', 'min:1'],
+        'formData.languages.*' => ['required', 'integer', 'exists:languages,id'],
         ];
         return array_merge($rules,
         $this->getValidationRules());

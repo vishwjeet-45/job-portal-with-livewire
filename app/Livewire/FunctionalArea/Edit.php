@@ -59,7 +59,8 @@ class Edit extends Component
             return;
         }
         $this->validate([
-            'formData.name' => 'required|string|max:255|unique:roles,name,' . $this->funcational_area->id
+            'formData.name' => 'required|string|max:255|unique:roles,name,' . $this->funcational_area->id,
+            'formData.industry_id' => 'required',
         ]);
 
         $this->funcational_area->update($this->formData);

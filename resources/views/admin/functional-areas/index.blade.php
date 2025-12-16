@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('page_heading', 'Industries List')
+@section('page_heading', 'Functional Area List')
 @can('functional-areas.create')
 @section('top_buttion')
     <button type="button" class="btn addButton" data-bs-toggle="modal" data-bs-target="#createModal">

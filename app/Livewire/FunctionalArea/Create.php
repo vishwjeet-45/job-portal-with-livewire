@@ -26,9 +26,10 @@ class Create extends Component
     {
         $this->validate([
             'formData.name' => 'required|string|max:255|unique:funcational_areas,name',
+            'formData.industry_id' => 'required',
         ]);
         FuncationalArea::create($this->formData);
-        session()->flash('message', 'Role created successfully!');
+        session()->flash('message', 'Functional Area created successfully!');
         $this->reset('formData');
         $this->dispatch('modal-hide', id: 'createModal');
         $this->dispatch('refreshTable', id: 'dataTable');
