@@ -189,4 +189,9 @@ class User extends Authenticatable
         return $this->employments->pluck('job_title')->implode(', ') ?? null;
     }
 
+    public function notes()
+    {
+        return $this->morphMany(Note::class, 'noteable');
+    }
+
 }

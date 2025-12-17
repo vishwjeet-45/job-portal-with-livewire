@@ -1,5 +1,12 @@
 <div class="card p-3">
 
+ @if (session()->has('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ session('success') }}
+    <button type="button" class="close btn-close btn-white" data-bs-dismiss="alert" aria-label="Close">
+    </button>
+</div>
+@endif
     <!-- GLOBAL SEARCH -->
     <div class="mb-1 row justify-content-end">
         <div class="col-md-{{ $col ?? 3 }}">
@@ -28,55 +35,87 @@
                 <tbody>
                     @forelse($applicants as $index => $candidate)
                         <tr>
-                            <td>{{ $candidate->name ?? 'N/A' }}</td>
-                            <td>
+                            <td >
+                                <a href="javascript:void(0)"
+                                wire:click="$toggle('openNotes.{{ $candidate->pivot->id }}')"
+                                class="fw-semibold text-primary">
+                                    {{ $candidate->name ?? 'N/A' }}
+                                </a>
+                            </td>
+
+                            <td class="text-center">
                                 {{ $candidate->educations()->first()?->course ?? 'N/A' }}-
                                 {{ $candidate->educations()->first()?->university ?? 'N/A' }}
                             </td>
-                            <td>
-                                 {{ $candidate->currentEmployment->first()->company_name ?? 'N/A' }}
+                            <td class="text-center">
+                                {{ $candidate->currentEmployment->first()->company_name ?? 'N/A' }}
                             </td>
-                            <td>
+                            <td class="text-center">
                                 @if (!empty($candidate->candidate?->resume))
 
-                                    <a href="{{ asset('storage/'.$candidate->candidate->resume) }}" target="_blank">
-                                                        View Resume
-                                                    </a>
+                                    <a href="{{ asset('storage/'. $candidate->candidate->resume) }}" target="_blank">
+                                        View Resume
+                                    </a>
                                 @endif
                             </td>
-                            <td>{{ $candidate->pivot->created_at->format('d M, Y') }}</td>
-                            <td>
-                                <div class="button--group d-flex justify-content-center">
-                                   @if ($candidate->pivot->status === 'pending')
-                                        <button
+                            <td class="text-center">
+                               {{ $candidate->pivot->created_at->format('d M, Y') }}
+                            </td>
+                            <td class="text-center">
+
+                            @php
+                                $status = \App\Models\JobApplication::STATUS_COLORS;
+                            @endphp
+                               <select
+                                    class=" form-select-sm text-{{ $status[$candidate->pivot->status] }}"
+                                    wire:change="updateStatus({{ $candidate->pivot->job_id }}, {{ $candidate->id }}, $event.target.value)">
+                                    @foreach($status as $status => $color)
+                                        <option
+                                            value="{{ $status }}"
+                                            @selected($status === $candidate->pivot->status)
+                                            class=" text-{{ $color }}"
+                                        >
+                                            {{ ucfirst($status) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                        </tr>
+
+                        @if(!empty($openNotes[$candidate->pivot->id]))
+                        <tr>
+                            <td colspan="6" class="bg-light p-3">
+
+                                <div class="border rounded p-3 w-100">
+
+                                <div class="d-flex justify-content-between align-center mb-2">
+
+                                    <h6 class="col-2">Notes</h6>
+                                    <button
                                         type="button"
-                                            wire:click="updateStatus({{ $candidate->pivot->job_id }}, {{ $candidate->id }}, 'approved')"
-                                            class="btn btn-sm btn-success me-2">
-                                            Shortlist
-                                        </button>
-
-                                        <button
-                                        type="button"
-                                            wire:click="updateStatus({{ $candidate->pivot->job_id }}, {{ $candidate->id }}, 'rejected')"
-                                            class="btn btn-sm btn-outline-danger border-danger">
-                                            Reject
-                                        </button>
-
-                                    @else
-                                        <span class="badge
-                                            @if($candidate->pivot->status === 'approved') bg-success
-                                            @elseif($candidate->pivot->status === 'rejected') bg-danger
-                                            @else bg-warning
-                                            @endif
-                                        ">
-                                            {{ ucfirst($candidate->pivot->status) }}
-                                        </span>
-
-                                    @endif
-
+                                        wire:click="openNoteModal({{ $candidate->pivot->id }})"
+                                        class="btn btn-sm btn-outline-primary me-2 col-2">
+                                        Add Note
+                                    </button>
+                                </div>
+                                    @php
+                                         $notes = \App\Models\JobApplication::find($candidate->pivot->id)->notes;
+                                    @endphp
+                                    @forelse($notes as $note)
+                                        <div class="mb-2 p-2 bg-white border rounded">
+                                            {{ $note->note }}
+                                            <div class="text-muted small mt-1">
+                                                <span class="text-info">{{ $note->createdBy->name ?? 'N/A' }}</span>
+                                                {{ $note->created_at->format('d M Y h:i A') }}
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <span class="text-muted">No notes added</span>
+                                    @endforelse
                                 </div>
                             </td>
                         </tr>
+                        @endif
                     @empty
                         <tr>
                             <td colspan="7" class="text-center py-3">No applicants found</td>
@@ -93,4 +132,82 @@
          {{ $applicants->links() }}
 
     </div>
+
+@if($showNoteModal)
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,.5)">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Note</h5>
+                    <button type="button" class="btn-close" wire:click="$set('showNoteModal', false)"></button>
+                </div>
+
+                <div class="modal-body">
+                    <textarea
+                        wire:model.defer="noteText"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Write note here..."></textarea>
+
+                    @error('noteText')
+                        <span class="text-danger small">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary"
+                            wire:click="$set('showNoteModal', false)">
+                        Cancel
+                    </button>
+
+                    <button class="btn btn-primary"
+                            wire:click="saveNote">
+                        Save Note
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+@endif
+
+@if($scheduledModel)
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,.5)">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Note</h5>
+                    <button type="button" class="btn-close" wire:click="$set('scheduledModel', false)"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input
+                        type="datetime-local"
+                        wire:model.defer="scheduleDate"
+                        class="form-control">
+
+                    @error('scheduleDate')
+                        <span class="text-danger small">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary"
+                            wire:click="$set('scheduledModel', false)">
+                        Cancel
+                    </button>
+
+                    <button class="btn btn-primary"
+                            wire:click="saveScheduleDate">
+                        Save Note
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+@endif
+
 </div>
