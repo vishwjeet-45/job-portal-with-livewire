@@ -63,8 +63,7 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         DB::commit();
-
-        return redirect()->route('admin.dashboard')->with('success', 'Registration successful!');
+        return redirect()->intended(route('index', absolute: false));
     } catch (\Exception $e) {
         DB::rollBack();
         if (isset($path) && \Storage::disk('public')->exists($path)) {

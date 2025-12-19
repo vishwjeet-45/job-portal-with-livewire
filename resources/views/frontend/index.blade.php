@@ -20,7 +20,8 @@
                             <p class="text-center designations m-0 p-0">No employment record</p>
                             <p class="text-uppercase text-center pt-2 company mb-1"> No company record</p>
 
-                            <p class="online_day text-center text-black">Last update : 3 weeks ago
+                            <p class="online_day text-center text-black">Last update :
+                                 {{ $user->updated_at->diffForHumans() }}
                             </p>
                             <div class="d-flex justify-content-center ">
                                 <div class="d-flex justify-content-center">
